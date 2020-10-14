@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./app/magtape-init/
-          #file: ./Dockerfile
+          file: ./app/magtape-init/Dockerfile
           # tag_with_ref: true  ## this option requires a bunch of logic to implement in v2 of the action
           # this is tagging with the version number
           tags: ilrudie/magtape:1.0
@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./app/magtape-init/
-          #file: ./Dockerfile
+          file: ./app/magtape-init/Dockerfile
           # tags: tmobile/magtape:latest
           tags: ilrudie/magtape:latest
 
@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./app/magtape/
-          #file: ./Dockerfile
+          file: ./app/magtape-init/Dockerfile
           # tag_with_ref: true  ## this option requires a bunch of logic to implement in v2 of the action
           # this is tagging with the version number
           tags: ilrudie/magtape:1.0
@@ -82,6 +82,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./app/magtape/
-          #file: ./Dockerfile
+          file: ./app/magtape-init/Dockerfile
           # tags: tmobile/magtape:latest
           tags: ilrudie/magtape:latest
