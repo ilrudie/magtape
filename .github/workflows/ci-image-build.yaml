@@ -16,6 +16,12 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Prepare
+        id: prep
+        #assumed that GITHUB_REF variable always is created by actions
+        run: |
+          echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+          
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
@@ -35,7 +41,8 @@ jobs:
           push: true
           # tag_with_ref: true  ## this option requires a bunch of logic to implement in v2 of the action
           # this is tagging with the version number
-          tags: ilrudie/magtape-init:1.0
+          # tags: tmobile/magtape-init:${{ steps.prep.outputs.version }}
+          tags: ilrudie/magtape-init:${{ steps.prep.outputs.version }}
  
       - name: Push magtape-init image to DockerHub using latest tag
         #if: github.repository == 'tmobile/magtape'
@@ -58,6 +65,12 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Prepare
+        id: prep
+        #assumed that GITHUB_REF variable always is created by actions
+        run: |
+          echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
@@ -77,7 +90,8 @@ jobs:
           push: true
           # tag_with_ref: true  ## this option requires a bunch of logic to implement in v2 of the action
           # this is tagging with the version number
-          tags: ilrudie/magtape:1.0
+          # tags: tmobile/magtape-init:${{ steps.prep.outputs.version }}
+          tags: ilrudie/magtape-init:${{ steps.prep.outputs.version }}
 
       - name: Push magtape image to DockerHub using latest tag
         #if: github.repository == 'tmobile/magtape'
