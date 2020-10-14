@@ -91,7 +91,7 @@ jobs:
           # tag_with_ref: true  ## this option requires a bunch of logic to implement in v2 of the action
           # this is tagging with the version number
           # tags: tmobile/magtape-init:${{ steps.prep.outputs.version }}
-          tags: ilrudie/magtape-init:${{ steps.prep.outputs.version }}
+          tags: ilrudie/magtape:${{ steps.prep.outputs.version }}
 
       - name: Push magtape image to DockerHub using latest tag
         #if: github.repository == 'tmobile/magtape'
