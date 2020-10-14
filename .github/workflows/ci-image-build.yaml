@@ -35,7 +35,7 @@ jobs:
           push: true
           # tag_with_ref: true  ## this option requires a bunch of logic to implement in v2 of the action
           # this is tagging with the version number
-          tags: ilrudie/magtape:1.0
+          tags: ilrudie/magtape-init:1.0
  
       - name: Push magtape-init image to DockerHub using latest tag
         #if: github.repository == 'tmobile/magtape'
@@ -46,7 +46,7 @@ jobs:
           file: ./app/magtape-init/Dockerfile
           push: true
           # tags: tmobile/magtape:latest
-          tags: ilrudie/magtape:latest
+          tags: ilrudie/magtape-init:latest
 
   # Build and push magtape container image
   build-magtape-image:
