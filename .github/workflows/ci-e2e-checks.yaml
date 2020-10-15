@@ -40,6 +40,7 @@ jobs:
       uses: actions/checkout@v2
 
     # Prepare is used to to collect information needed later in the action and expose it so it can be referenced
+    # use this: GITHUB_ACTOR to set the "org" dynamically
     - name: Prepare
       id: prep
       run: |
@@ -60,7 +61,7 @@ jobs:
         file: ./app/magtape-init/Dockerfile
         push: false
         # Uses the version output exposed by the Prepare step to set the tag under v2
-        tags: tmobile/magtape-init:${{ steps.prep.outputs.version }}
+        tags: ilrudie/magtape-init:${{ steps.prep.outputs.version }}
 
     - name: Build magtape Container Image
       #if: github.repository == 'tmobile/magtape'
@@ -72,10 +73,10 @@ jobs:
         file: ./app/magtape/Dockerfile
         push: false
         # Uses the version output exposed by the Prepare step to set the tag under v2
-        tags: tmobile/magtape:${{ steps.prep.outputs.version }}
+        tags: ilrudie/magtape:${{ steps.prep.outputs.version }}
 
     - name: Setup KinD Cluster
-      timeout-minutes: 5
+      timeout-minutes: 10
       uses: engineerd/setup-kind@v0.4.0
       with:
           version: "v0.9.0"
@@ -86,8 +87,8 @@ jobs:
       run: |
         echo "Loading MagTape images to KinD nodes"
         GIT_SHA=${{github.sha}}
-        kind load docker-image tmobile/magtape-init:sha-${GIT_SHA::7}
-        kind load docker-image tmobile/magtape:sha-${GIT_SHA::7}
+        kind load docker-image ilrudie/magtape-init:sha-${GIT_SHA::7}
+        kind load docker-image ilrudie/magtape:sha-${GIT_SHA::7}
         echo "Updating target image to use local ref"
         sed -i='' -E "s/(MAGTAPE_VERSION := )(.*$)/\1sha-${GIT_SHA::7}/" Makefile
         sed -i='' -E 's/(imagePullPolicy:) Always/\1 IfNotPresent/' deploy/manifests/magtape-deploy.yaml
