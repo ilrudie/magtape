@@ -43,7 +43,8 @@ jobs:
     - name: Prepare
       id: prep
       run: |
-        echo ::set-output name=version::sha-${GIT_SHA::7}
+        echo ${GITHUB_SHA::7}
+        echo ::set-output name=version::sha-${GITHUB_SHA::7}
         
     # Part of docker/build-push-action@v2; setting up the build system
     - name: Set up Docker Buildx
