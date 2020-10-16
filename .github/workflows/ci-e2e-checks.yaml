@@ -61,7 +61,7 @@ jobs:
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape-init/Dockerfile
         push: false
-        outputs: type=oci,dest=./magtape-init-${{ steps.prep.outputs.version }}.tar
+        outputs: type=oci,dest=/tmp/magtape-init-${{ steps.prep.outputs.version }}.tar
         # Uses the version output exposed by the Prepare step to set the tag under v2
         tags: ${{ steps.prep.outputs.org }}/magtape-init:${{ steps.prep.outputs.version }}
 
@@ -74,7 +74,7 @@ jobs:
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape/Dockerfile
         push: false
-        outputs: type=oci,dest=./magtape-${{ steps.prep.outputs.version }}.tar
+        outputs: type=oci,dest=/tmp/magtape-${{ steps.prep.outputs.version }}.tar
         # Uses the version output exposed by the Prepare step to set the tag under v2
         tags: ${{ steps.prep.outputs.org }}/magtape:${{ steps.prep.outputs.version }}
 
@@ -90,8 +90,8 @@ jobs:
       run: |
         echo "Loading MagTape images to KinD nodes"
         GIT_SHA=${{github.sha}}
-        kind load docker-image ./magtape-init-sha-${GIT_SHA::7}.tar
-        kind load docker-image ./magtape-sha-${GIT_SHA::7}.tar
+        kind load docker-image /tmp/magtape-init-sha-${GIT_SHA::7}.tar
+        kind load docker-image /tmp/magtape-sha-${GIT_SHA::7}.tar
         echo "Updating target image to use local ref"
         sed -i='' -E "s/(MAGTAPE_VERSION := )(.*$)/\1sha-${GIT_SHA::7}/" Makefile
         sed -i='' -E 's/(imagePullPolicy:) Always/\1 IfNotPresent/' deploy/manifests/magtape-deploy.yaml
