@@ -46,6 +46,7 @@ jobs:
       run: |
         echo ${GITHUB_SHA::7}
         echo ::set-output name=version::sha-${GITHUB_SHA::7}
+        echo ::set-output name=org::${GITHUB_ACTOR}
         
     # Part of docker/build-push-action@v2; setting up the build system
     - name: Set up Docker Buildx
@@ -60,8 +61,9 @@ jobs:
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape-init/Dockerfile
         push: false
+        output: type=local,dest=/images
         # Uses the version output exposed by the Prepare step to set the tag under v2
-        tags: ilrudie/magtape-init:${{ steps.prep.outputs.version }}
+        tags: ${{ steps.prep.outputs.org }}/magtape-init:${{ steps.prep.outputs.version }}
 
     - name: Build magtape Container Image
       #if: github.repository == 'tmobile/magtape'
@@ -72,8 +74,9 @@ jobs:
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape/Dockerfile
         push: false
+        output: type=local,dest=/images
         # Uses the version output exposed by the Prepare step to set the tag under v2
-        tags: ilrudie/magtape:${{ steps.prep.outputs.version }}
+        tags: ${{ steps.prep.outputs.org }}/magtape:${{ steps.prep.outputs.version }}
 
     - name: Setup KinD Cluster
       timeout-minutes: 10
@@ -87,8 +90,8 @@ jobs:
       run: |
         echo "Loading MagTape images to KinD nodes"
         GIT_SHA=${{github.sha}}
-        kind load docker-image ilrudie/magtape-init:sha-${GIT_SHA::7}
-        kind load docker-image ilrudie/magtape:sha-${GIT_SHA::7}
+        kind load docker-image /images/${GITHUB_ACTOR}/magtape-init:sha-${GIT_SHA::7}
+        kind load docker-image /images/${GITHUB_ACTOR}/magtape:sha-${GIT_SHA::7}
         echo "Updating target image to use local ref"
         sed -i='' -E "s/(MAGTAPE_VERSION := )(.*$)/\1sha-${GIT_SHA::7}/" Makefile
         sed -i='' -E 's/(imagePullPolicy:) Always/\1 IfNotPresent/' deploy/manifests/magtape-deploy.yaml
