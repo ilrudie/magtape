@@ -97,8 +97,8 @@ jobs:
       run: |
         echo "Loading MagTape images to KinD nodes"
         GIT_SHA=${{github.sha}}
-        docker save -o /tmp/magtape-init-sha-${GIT_SHA::7}.tar localhost:5000/${GITHUB_ACTOR}/magtape-init-sha-${GIT_SHA::7}.tar
-        docker save -o /tmp/magtape-sha-${GIT_SHA::7}.tar localhost:5000/${GITHUB_ACTOR}/magtape-sha-${GIT_SHA::7}.tar
+        docker save -o /tmp/magtape-init-sha-${GIT_SHA::7}.tar localhost:5000/${GITHUB_ACTOR}/magtape-init:sha-${GIT_SHA::7}
+        docker save -o /tmp/magtape-sha-${GIT_SHA::7}.tar localhost:5000/${GITHUB_ACTOR}/magtape:sha-${GIT_SHA::7}
         kind load docker-image /tmp/magtape-init-sha-${GIT_SHA::7}.tar
         kind load docker-image /tmp/magtape-sha-${GIT_SHA::7}.tar
         echo "Updating target image to use local ref"
