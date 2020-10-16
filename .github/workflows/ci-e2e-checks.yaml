@@ -13,6 +13,11 @@ jobs:
   # Job to lint code
   e2e-tests:
     runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     strategy:
       matrix:
         k8s-version:
@@ -60,10 +65,10 @@ jobs:
         context: ./app/magtape-init/
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape-init/Dockerfile
-        push: false
-        outputs: type=oci,dest=/tmp/magtape-init-${{ steps.prep.outputs.version }}.tar
+        push: true
+        #outputs: type=oci,dest=/tmp/magtape-init-${{ steps.prep.outputs.version }}.tar
         # Uses the version output exposed by the Prepare step to set the tag under v2
-        tags: ${{ steps.prep.outputs.org }}/magtape-init:${{ steps.prep.outputs.version }}
+        tags: localhost:5000/${{ steps.prep.outputs.org }}/magtape-init:${{ steps.prep.outputs.version }}
 
     - name: Build magtape Container Image
       #if: github.repository == 'tmobile/magtape'
@@ -73,10 +78,10 @@ jobs:
         context: ./app/magtape/
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape/Dockerfile
-        push: false
-        outputs: type=oci,dest=/tmp/magtape-${{ steps.prep.outputs.version }}.tar
+        push: true
+        #outputs: type=oci,dest=/tmp/magtape-${{ steps.prep.outputs.version }}.tar
         # Uses the version output exposed by the Prepare step to set the tag under v2
-        tags: ${{ steps.prep.outputs.org }}/magtape:${{ steps.prep.outputs.version }}
+        tags: localhost:5000/${{ steps.prep.outputs.org }}/magtape:${{ steps.prep.outputs.version }}
 
     - name: Setup KinD Cluster
       timeout-minutes: 10
@@ -90,6 +95,8 @@ jobs:
       run: |
         echo "Loading MagTape images to KinD nodes"
         GIT_SHA=${{github.sha}}
+        docker save -o /tmp/magtape-init-sha-${GIT_SHA::7}.tar localhost:5000/${GITHUB_ACTOR}/magtape-init-sha-${GIT_SHA::7}.tar
+        docker save -o /tmp/magtape-sha-${GIT_SHA::7}.tar localhost:5000/${GITHUB_ACTOR}/magtape-sha-${GIT_SHA::7}.tar
         kind load docker-image /tmp/magtape-init-sha-${GIT_SHA::7}.tar
         kind load docker-image /tmp/magtape-sha-${GIT_SHA::7}.tar
         echo "Updating target image to use local ref"
