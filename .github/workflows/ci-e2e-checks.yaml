@@ -61,7 +61,7 @@ jobs:
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape-init/Dockerfile
         push: false
-        output: type=local,dest=/images
+        outputs: type=local,dest=/images
         # Uses the version output exposed by the Prepare step to set the tag under v2
         tags: ${{ steps.prep.outputs.org }}/magtape-init:${{ steps.prep.outputs.version }}
 
@@ -74,7 +74,7 @@ jobs:
         # file should be specified relative to the repo root rather than relative to the context
         file: ./app/magtape/Dockerfile
         push: false
-        output: type=local,dest=/images
+        outputs: type=local,dest=/images
         # Uses the version output exposed by the Prepare step to set the tag under v2
         tags: ${{ steps.prep.outputs.org }}/magtape:${{ steps.prep.outputs.version }}
 
