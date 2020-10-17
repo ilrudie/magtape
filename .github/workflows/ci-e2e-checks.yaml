@@ -97,6 +97,7 @@ jobs:
       run: |
         echo "Loading MagTape images to KinD nodes"
         GIT_SHA=${{github.sha}}
+        docker images localhost:5000/tmobile/magtape-init
         docker save -o /tmp/magtape-init-sha-${GIT_SHA::7}.tar localhost:5000/tmobile/magtape-init:sha-${GIT_SHA::7}
         docker save -o /tmp/magtape-sha-${GIT_SHA::7}.tar localhost:5000/tmobile/magtape:sha-${GIT_SHA::7}
         kind load docker-image /tmp/magtape-init-sha-${GIT_SHA::7}.tar
