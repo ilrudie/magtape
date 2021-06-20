@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package magtape.grpc_alert;
+
+message Alert {
+
+  string subject = 1;
+  string body = 5;
+  repeated string targets = 6;
+
+}
